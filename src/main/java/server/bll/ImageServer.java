@@ -14,8 +14,8 @@ import common.dal.IImageStore;
 import common.dal.StoreFactory;
 
 /**
- * 
- * This class is responsible for serving the clients 
+ *
+ * This class is responsible for serving the clients
  * with a JSON representation of the latest images stored in the DB.
  * It is also responsible for providing configuration
  * values like the slideshow delay.
@@ -23,22 +23,27 @@ import common.dal.StoreFactory;
  *
  */
 
-@SuppressWarnings("restriction")
-public class ImageServer {
+ @SuppressWarnings("restriction")
+ public class ImageServer {
 
-	private static final int PORT = 8000;
-	private static final int NUMBER_OF_IMAGES_TO_SERVE = 100;
+  	private static ImageServer instance = new ImageServer(1);
+ 	private static final int PORT = 8000;
+ 	private static final int NUMBER_OF_IMAGES_TO_SERVE = 100;
+ 	private static HttpServer server;
 
-	private HttpServer server;
-
-	public ImageServer() {
-		try {
-			initServer();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+ 	private ImageServer(int flag) {
+ 		try {
+ 			if(flag==1) {
+ 				initServer();
+ 			}
+ 		} catch (IOException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}
+ 	}
+ 	public static ImageServer getServer() {
+ 		return instance;
+ 	}
 
 	private void initServer() throws IOException {
 		ExecutorService excutor;
@@ -71,7 +76,7 @@ public class ImageServer {
 			String response = getJsonRepresentationOfConfig("slideshow_delay");
 			ImageServer.respondToClient(exchange, response);
 		}
-		
+
 		private String getJsonRepresentationOfConfig(String name) {
 			IConfigsStore store = StoreFactory.getConfigsStore();
 			String value = store.getConfig(name);
@@ -79,7 +84,7 @@ public class ImageServer {
 			return json;
 		}
 	}
-	
+
 	public static void respondToClient(HttpExchange exchange, String json) throws IOException {
 		exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, json.length());
 		OutputStream os = exchange.getResponseBody();
