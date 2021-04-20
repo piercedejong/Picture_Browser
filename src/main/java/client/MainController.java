@@ -5,7 +5,7 @@ import java.awt.DisplayMode;
 import javax.swing.JFrame;
 
 import client.bll.SlideshowController;
-import client.gui.MainWindow;
+import client.gui.*;
 
 /**
  * This class initializes all that is necessary to run the
@@ -22,9 +22,18 @@ public class MainController {
 	
 	public static void main(String[] args) {
 		initializeSlideshow();
+		//Edited code for SENG 401 Project///////////////////////////////////////
+		//Add decorator image size controller and decorator pause/continue button to slide show
+		SlideshowHandler slideshowWithImageSizeController = new ImageSizeContraollerViewEditor
+				(new PauseOrContinueSlideshowButtonViewEditor(slideshow));
+        /////////////////////////////////////////////////////////////////////////
 		setFullScreenMode();
 		setVisible();
-		startSlideshow();
+		//Edited code for SENG 401 Project///////////////////////////////////////
+		//startSlideshow();
+		slideshowWithImageSizeController.start();//Start decorated slideshow
+        /////////////////////////////////////////////////////////////////////////
+		
 	}
 	
 	private static void initializeSlideshow() {
